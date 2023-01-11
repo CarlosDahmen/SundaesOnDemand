@@ -45,4 +45,29 @@ describe("SummaryForm Tests", () => {
     await user.click(checkbox);
     expect(button).toBeDisabled();
   });
+
+  test("popover response to hover", async () => {
+    render(<SummaryForm />);
+    const user = userEvent.setup();
+
+    //check that popover starts out hidden
+    const nullPopover = screen.queryByText(
+      /No ice cream will actually be delivered/i
+    );
+    expect(nullPopover).not.toBeInTheDocument();
+
+    //popover appears on mousover of checkbox label
+
+    const termsAndConditions = screen.getByText(/terms and conditions/i);
+    await user.hover(termsAndConditions);
+
+    const popover = screen.getByText(
+      /No ice cream will actually be delivered/i
+    );
+    expect(popover).toBeInTheDocument();
+
+    //dissapears when we mouse out
+    await user.unhover(termsAndConditions);
+    expect(popover).not.toBeInTheDocument();
+  });
 });
