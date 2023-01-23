@@ -14,12 +14,20 @@ export default function Options({ optionType }) {
   const { totals } = useOrderDetails();
   //optionType is either 'scoops' or 'toppings'
   useEffect(() => {
+    //create an abort controller to attach to the network requests
+    const controller = new AbortController();
     axios
-      .get(`http://localhost:3030/${optionType}`)
+      .get(`http://localhost:3030/${optionType}`, { signal: controller.signal })
       .then((response) => setItems(response.data))
       .catch((error) => {
+        console.log("ERROR ========================>", error);
         setError(true);
       });
+
+    //abort axios call on componentUnmount
+    // return () => {
+    //   controller.abort();
+    // };
   }, [optionType]);
 
   if (error) {

@@ -1,5 +1,6 @@
 import { createContext, useContext, useState } from "react";
 import { pricePerItem } from "../constants";
+import { formatCurrency } from "../utilities";
 
 const OrderDetails = createContext();
 
@@ -56,6 +57,16 @@ export function OrderDetailsProvider(props) {
     toppings: calculateTotal("toppings"),
   };
 
-  const value = { optionCounts, totals, updateItemCount, resetOrder };
+  const grandTotal = formatCurrency(
+    calculateTotal("scoops") + calculateTotal("toppings")
+  );
+
+  const value = {
+    optionCounts,
+    grandTotal,
+    totals,
+    updateItemCount,
+    resetOrder,
+  };
   return <OrderDetails.Provider value={value} {...props} />;
 }
