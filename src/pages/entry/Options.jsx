@@ -20,7 +20,7 @@ export default function Options({ optionType }) {
       .get(`http://localhost:3030/${optionType}`, { signal: controller.signal })
       .then((response) => setItems(response.data))
       .catch((error) => {
-        console.log("ERROR ========================>", error);
+        // console.log("ERROR ========================>", error);
         setError(true);
       });
 
@@ -52,7 +52,7 @@ export default function Options({ optionType }) {
       <p>
         {title} total: {formatCurrency(totals[optionType])}
       </p>
-      <Row>{optionItems}</Row>;
+      <Row>{optionItems}</Row>
     </div>
   );
 }
