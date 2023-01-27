@@ -117,3 +117,28 @@ test("toppings not shown on confirmation page if none are selected", async () =>
 
   unmount();
 });
+
+test("order button is disabled if no scoops are selected", async () => {
+  const user = userEvent.setup();
+  //render app
+  const { unmount } = render(<App />);
+
+  // check order button is disabled
+  const orderButton = screen.getByRole("button", { name: "Order Sundae" });
+  expect(orderButton).toBeDisabled();
+
+  //add scoop and check order button is enabled
+  const vanillaInput = await screen.findByRole("spinbutton", {
+    name: "Vanilla",
+  });
+  await user.clear(vanillaInput);
+  await user.type(vanillaInput, "2");
+  expect(orderButton).toBeEnabled();
+
+  //remove scoop and check order button is disabled
+  await user.clear(vanillaInput);
+  await user.type(vanillaInput, "0");
+  expect(orderButton).toBeDisabled();
+
+  unmount();
+});
