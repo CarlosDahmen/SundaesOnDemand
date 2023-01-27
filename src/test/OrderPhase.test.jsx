@@ -27,8 +27,8 @@ test("order phases for happy path", async () => {
   await user.click(hotFudge);
   const total = screen.getByText("Grand total:", { exact: false });
   expect(total).toHaveTextContent("7.50");
-  // //find and click order button
 
+  // //find and click order button
   const orderButton = screen.getByRole("button", { name: "Order Sundae" });
 
   await user.click(orderButton);
@@ -52,7 +52,7 @@ test("order phases for happy path", async () => {
   await user.click(confirmButton);
 
   // expect LOADING to show
-  const loadingMessage = screen.getByText("LOADING", { name: false });
+  let loadingMessage = screen.getByText("LOADING", { name: false });
   expect(loadingMessage).toBeInTheDocument();
 
   // check page confirmation
@@ -60,6 +60,10 @@ test("order phases for happy path", async () => {
     name: /thank you/i,
   });
   expect(thankYouHeader).toBeInTheDocument();
+
+  //expect loading message to have dissapeared
+  const notLoading = screen.queryByText("LOADING");
+  expect(notLoading).not.toBeInTheDocument();
 
   //confirm order number on confirmation page
   const orderNumber = await screen.findByText(/order number/i);
@@ -79,4 +83,37 @@ test("order phases for happy path", async () => {
   unmount();
 
   // //do we need to await anything to avoid test errors
+});
+
+test("toppings not shown on confirmation page if none are selected", async () => {
+  const user = userEvent.setup();
+  //render app
+  const { unmount } = render(<App />);
+
+  // //add scoops and toppings
+  // //add 2 vanilla scoops
+  const vanillaInput = await screen.findByRole("spinbutton", {
+    name: "Vanilla",
+  });
+  await user.clear(vanillaInput);
+  await user.type(vanillaInput, "2");
+  //add 1 chocolate scoop
+  const chocolateInput = await screen.findByRole("spinbutton", {
+    name: "Chocolate",
+  });
+  await user.clear(chocolateInput);
+  await user.type(chocolateInput, "1");
+
+  const orderButton = screen.getByRole("button", { name: "Order Sundae" });
+  await user.click(orderButton);
+
+  //check scoop heading is on the document
+  const scoopsHeading = screen.getByRole("heading", { name: /scoops/i });
+  expect(scoopsHeading).toBeInTheDocument();
+
+  //check topping heading is not on the document
+  const toppingHeader = screen.queryByRole("heading", { name: /Topping/i });
+  expect(toppingHeader).not.toBeInTheDocument();
+
+  unmount();
 });
