@@ -47,8 +47,10 @@ export default function Options({ optionType }) {
 
   return (
     <div>
-      <h1>{title}</h1>
-      <p>{formatCurrency(pricePerItem[optionType])} each</p>
+      <div className="option-component-title">
+        <h1>{title}</h1>
+        <p>{formatCurrency(pricePerItem[optionType])} each</p>
+      </div>
       <p>
         {title} total: {formatCurrency(totals[optionType])}
       </p>
